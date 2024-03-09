@@ -1,0 +1,56 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+def calculate_bending_moment_and_shear_force(length, load_position, load_magnitude):
+    # Calculate reactions at supports
+    reaction_a = load_magnitude / 2
+    reaction_b = load_magnitude / 2
+
+    # Create positions along the beam
+    x_positions = np.linspace(0, length, 1000)
+
+    # Calculate shear force and bending moment at each position
+    shear_forces = []
+    bending_moments = []
+    for x in x_positions:
+        if x < load_position:
+            shear_force = reaction_a
+            bending_moment = reaction_a * (load_position - x)
+        else:
+            shear_force = -reaction_b
+            bending_moment = reaction_b * (x - load_position)
+
+        shear_forces.append(shear_force)
+        bending_moments.append(bending_moment)
+
+    return x_positions, shear_forces, bending_moments
+
+def plot_diagrams(x_positions, shear_forces, bending_moments):
+    fig, ax1 = plt.subplots()
+
+    color = 'tab:red'
+    ax1.set_xlabel('Position along the beam (m)')
+    ax1.set_ylabel('Shear Force (N)', color=color)
+    ax1.plot(x_positions, shear_forces, color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()  
+    color = 'tab:blue'
+    ax2.set_ylabel('Bending Moment (N-m)', color=color)  
+    ax2.plot(x_positions, bending_moments, color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()  
+    plt.title('Shear Force and Bending Moment Diagrams')
+    plt.show()
+
+def main():
+    length = 10.0  # Length of the beam in meters
+    load_position = length / 2  # Position of the point load in meters
+    load_magnitude = 10000.0  # Magnitude of the point load in Newtons
+
+    x_positions, shear_forces, bending_moments = calculate_bending_moment_and_shear_force(length, load_position, load_magnitude)
+    plot_diagrams(x_positions, shear_forces, bending_moments)
+
+if __name__ == "__main__":
+    main()
